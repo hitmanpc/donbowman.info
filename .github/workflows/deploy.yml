@@ -30,8 +30,8 @@ jobs:
         with:
           server: access1007013881.webspace-data.io
           port: 22
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          ssh_private_key: ${{ secrets.SFTP_PRIVATE_KEY }}
           local_path: './dist/*'
           remote_path: '/'
           delete_remote_files: false
