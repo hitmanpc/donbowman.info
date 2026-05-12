@@ -1,0 +1,61 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  tech?: string[];
+  date?: string;
+  githubUrl?: string;
+  liveUrl?: string;
+}
+
+const {
+  title,
+  description,
+  tech = [],
+  date,
+  githubUrl,
+  liveUrl,
+} = Astro.props;
+---
+
+<BaseLayout title={`${title} | Don Bowman`} description={description}>
+  <article class="project-detail">
+    <a href="/projects" class="back-link">← Back to projects</a>
+
+    <header class="project-header">
+      <p class="eyebrow">Project Case Study</p>
+      <h1>{title}</h1>
+      <p class="summary">{description}</p>
+
+      {date && <p class="project-date">{date}</p>}
+
+      {tech.length > 0 && (
+        <div class="tags">
+          {tech.map((item) => <span>{item}</span>)}
+        </div>
+      )}
+
+      {(githubUrl || liveUrl) && (
+        <div class="actions project-actions">
+          {githubUrl && (
+            <a href={githubUrl} class="button secondary" target="_blank">
+              View GitHub
+            </a>
+          )}
+
+          {liveUrl && (
+            <a href={liveUrl} class="button secondary" target="_blank">
+              View Live
+            </a>
+          )}
+        </div>
+      )}
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

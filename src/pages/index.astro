@@ -1,0 +1,25 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/sections/Hero.astro";
+import CredibilityStrip from "../components/sections/CredibilityStrip.astro";
+import ExperienceSummary from "../components/sections/ExperienceSummary.astro";
+import FeaturedProjects from "../components/sections/FeaturedProjects.astro";
+import SkillsSection from "../components/sections/SkillsSection.astro";
+import PersonalEngineering from "../components/sections/PersonalEngineering.astro";
+import ContactCta from "../components/sections/ContactCta.astro";
+
+import { site } from "../data/site";
+---
+
+<BaseLayout
+  title={`${site.name} | ${site.title}`}
+  description={site.description}
+>
+  <Hero />
+  <CredibilityStrip />
+  <ExperienceSummary />
+  <!-- <FeaturedProjects /> -->
+  <SkillsSection />
+  <PersonalEngineering />
+  <ContactCta />
+</BaseLayout>

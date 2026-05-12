@@ -1,0 +1,48 @@
+---
+title: "OBD2 Dashboard"
+description: "A Raspberry Pi 5 dashboard for real-time vehicle telemetry using React, FastAPI, WebSockets, and Docker."
+date: "2026-05-12"
+featured: true
+order: 1
+tech:
+  - React
+  - FastAPI
+  - WebSockets
+  - Docker
+  - Raspberry Pi 5
+githubUrl: "https://github.com/hitmanpc/obd2dashboard"
+---
+
+# OBD2 Dashboard
+
+I built this project to explore real-time vehicle telemetry using a Raspberry Pi 5, an OBD2 adapter, and a modern web dashboard.
+
+The goal is to stream live vehicle data into a browser-based UI that can eventually run in the car as a custom dashboard.
+
+## Problem
+
+Most off-the-shelf OBD2 apps are useful, but they do not give me the level of customization I want for my Coyote-swapped Foxbody Mustang.
+
+I wanted a system that could be extended, tested locally, and eventually deployed to dedicated hardware.
+
+## Technical approach
+
+The dashboard uses a frontend application for the visual interface and a backend service to communicate with the OBD2 layer.
+
+The backend can stream data over WebSockets so the UI can update in near real time.
+
+## What this demonstrates
+
+- Real-time data streaming
+- Hardware/software integration
+- Docker-based development workflow
+- Frontend and backend system design
+- Practical debugging across software and devices
+
+## Technologies used
+
+- React
+- FastAPI
+- WebSockets
+- Docker
+- Raspberry Pi 5

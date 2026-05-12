@@ -1,0 +1,14 @@
+---
+import { skills } from "../../data/skills";
+---
+
+<section class="py-18 border-t border-slate-200/[0.12]">
+  <div class="max-w-3xl mb-7">
+    <p class="text-blue-300 text-sm font-bold tracking-[0.12em] uppercase mb-4">Technical strengths</p>
+    <h2 class="text-white text-3xl md:text-4xl lg:text-5xl leading-tight m-0">Tools I use to build reliable software</h2>
+  </div>
+
+  <div class="flex gap-2.5 flex-wrap">
+    {skills.map((skill) => <span class="border border-blue-300/25 bg-blue-500/[0.12] text-blue-200 rounded-full px-3.5 py-2.5 text-base font-bold">{skill}</span>)}
+  </div>
+</section>
