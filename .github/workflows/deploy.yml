@@ -34,5 +34,5 @@ jobs:
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: .
+          server-dir: /kunden/homepages/12/d1007013881/htdocs
           dangerous-clean-slate: false
