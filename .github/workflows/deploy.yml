@@ -34,4 +34,4 @@ jobs:
           pass: ${{ secrets.SFTP_PASSWORD }}
           localDir: './dist/'
           remoteDir: '/'
-          options: '--use-cache --verbose --allow-chown --allow-suid --no-umask --parallel=2 --exclude-glob .git* --exclude .git/'
+          options: '--verbose --only-newer --parallel=2'
