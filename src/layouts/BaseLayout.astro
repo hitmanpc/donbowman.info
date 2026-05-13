@@ -24,5 +24,12 @@ const { title, description } = Astro.props;
     <main class="w-[min(1120px,calc(100%-32px))] mx-auto max-sm:w-[min(100%-24px,1120px)]">
       <slot />
     </main>
+    <footer class="text-center py-8 text-slate-400 text-sm">
+    <p>
+      Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">Astro</a>
+      {" · "}
+      <a href="https://github.com/hitmanpc/donbowman.info" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">View Source</a>
+    </p>
+  </footer>
   </body>
 </html>
