@@ -7,4 +7,5 @@ export const site = {
     "I build scalable web applications, microfrontends, and real-time systems using Angular, React, TypeScript, .NET, and modern CI/CD tooling.",
   email: "don@donbowman.info",
   resumeUrl: "/Don_Bowman_Résumé.pdf",
+  linkedInUrl: "https://www.linkedin.com/in/donbowmanjr/",
 };
