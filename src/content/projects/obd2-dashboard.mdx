@@ -1,0 +1,102 @@
+---
+title: "OBD2 Dashboard"
+description: "Real-time vehicle telemetry on a Raspberry Pi 5 — a .NET 8 + React system that streams live OBD2 data over WebSockets and is fully testable without a vehicle."
+date: "2026-05-12"
+tags: [".NET 8", "C#", "React", "TypeScript", "WebSockets", "Docker", "Raspberry Pi"]
+github: "https://github.com/hitmanpc/obd2dashboard"
+---
+
+{/*
+  NOTE TO SELF: match this frontmatter to your existing content-collection schema
+  (field names / tag format) before committing. Replace every [BRACKETED] value
+  below with a real measured number — don't ship the brackets.
+*/}
+
+A custom, in-car dashboard that reads live data from a vehicle's OBD2 port and
+renders it in the browser in real time. It runs on a Raspberry Pi 5 mounted in
+the car, but the entire system — backend, frontend, and the OBD2 link itself —
+can be developed and tested on a laptop with no vehicle attached.
+
+## Why I built it
+
+Off-the-shelf OBD2 apps are fine for reading codes, but they don't give me the
+control I want for my Coyote-swapped Foxbody: custom gauges, the specific PIDs I
+care about, and a layout I can iterate on. I wanted a platform I could extend,
+test locally, and deploy to dedicated hardware in the car — not another app I'd
+outgrow in a week.
+
+## Architecture
+
+```
+  Vehicle / Emulator            Raspberry Pi 5 (Docker)              Browser
+ ┌──────────────────┐        ┌───────────────────────────┐       ┌──────────────┐
+ │ ELM327 adapter    │  USB   │  .NET 8 backend            │  WS   │ React 18 + TS │
+ │ over serial       │ ─────▶ │  • AT command manager      │ ────▶ │ MustangDash   │
+ │ (/dev/ttyUSB0)    │ serial │  • ObdService (PID poll)   │ push  │ useWebSocket  │
+ │                   │        │  • WebSocketService        │       │ custom gauges │
+ └──────────────────┘        └───────────────────────────┘       └──────────────┘
+        ▲                              │  prod: nginx reverse proxy
+        │ socat virtual serial         │
+ ┌──────────────────┐                  ▼
+ │ ELM327 emulator   │            docker-compose (dev / prod)
+ │ (no car required) │
+ └──────────────────┘
+```
+
+- **Backend — .NET 8 / C#.** Owns the serial link to the OBD2 adapter, polls the
+  PIDs I care about, and pushes parsed readings to clients over a WebSocket. The
+  protocol handling lives in a small AT-command layer (`AtCommands.cs`) sitting
+  behind an `ObdService`, so the rest of the app talks in domain terms (RPM,
+  speed, coolant temp, gear) rather than raw ELM327 strings.
+- **Frontend — React 18 + TypeScript.** A `useWebSocket` hook manages the live
+  connection and feeds a Mustang-themed gauge cluster. The UI is just a consumer
+  of the stream, which keeps presentation and data acquisition cleanly separated.
+- **Deployment — Docker Compose.** The same containers I run locally deploy to
+  the Pi; a production compose file adds an nginx reverse proxy. A one-command
+  `deploy-pi.sh` handles the Pi side.
+
+## The decisions I'm proud of
+
+**Making the hardware optional in development.** The thing that makes or breaks a
+project like this isn't the gauges — it's that you can't iterate if you need the
+car running in the driveway every time you change a line. I run the Python
+ELM327 emulator as a daemon and bridge it to a virtual serial port with `socat`,
+so the backend talks to `/virtual/usb1` exactly as it would to a real adapter.
+The result: the full real-time pipeline — serial read, PID parse, WebSocket push,
+gauge render — is exercisable on a laptop, in CI, and with a real adapter, with
+no code path differences. That testability decision is what kept the project
+moving.
+
+**A thin protocol seam.** ELM327 quirks (timing, AT init sequences, mode/PID
+encoding) are isolated in the command layer. Which PIDs get polled is
+configuration (`ObdPidConfiguration.cs`), not code, so adding a reading is a data
+change rather than a refactor.
+
+**Dev/prod parity from day one.** Because deployment is containerized and ARM is a
+first-class target, "works on my machine" and "works on the Pi" are the same
+build. The prod compose file only adds the nginx layer.
+
+## Results
+
+- End-to-end update latency (serial read → gauge update): **[measure: ~__ ms]**
+- Sustained gauge refresh rate on the Pi 5: **[measure: __ Hz]**
+- Cold-start to live data after `deploy-pi.sh`: **[measure: __ s]**
+- PIDs streamed today: RPM, vehicle speed, coolant temperature, gear indicator
+
+{/* Replace the above with real measured numbers — these are the details a
+    senior interviewer probes, and concrete figures are what make the project
+    land. */}
+
+## What I'd do next
+
+- **Persistence + replay.** Log sessions to a time-series store so I can replay a
+  drive and debug the UI against recorded data instead of live serial.
+- **Backpressure handling.** Define explicit behavior when the adapter outpaces
+  the render loop (drop-oldest vs. coalesce) rather than relying on WebSocket
+  buffering.
+- **Reconnection semantics.** Harden the `useWebSocket` hook's retry/backoff and
+  surface connection state in the UI as a first-class element.
+- **A second display target.** The browser UI is the prototype; a dedicated
+  kiosk/full-screen mode for the in-dash screen is the real end state.
+
+[View the source on GitHub](https://github.com/hitmanpc/obd2dashboard)
